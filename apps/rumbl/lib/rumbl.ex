@@ -8,7 +8,6 @@ defmodule Rumbl do
 
     # Define workers and child supervisors to be supervised
     children = [
-      supervisor(Rumbl.InfoSys.Supervisor, []), # new supervisor
       # Start the Ecto repository
       supervisor(Rumbl.Repo, []),
       # Start the endpoint when the application starts
@@ -21,7 +20,6 @@ defmodule Rumbl do
       # :temporary -> the child is never restarted
       # :transient the child is restarted only if it terminates abnormally, with an exist reason other
       # than :normal, :shutdown, or {:shutdown, term}
-      worker(Rumbl.Counter, [5]),
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html

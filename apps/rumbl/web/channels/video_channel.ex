@@ -58,7 +58,7 @@ defmodule Rumbl.VideoChannel do
 
   defp compute_additional_info(ann, socket) do
     # We ask to InfoSys for one result (limit 1) and we wait only 10 seconds
-    for result <- Rumbl.InfoSys.compute(ann.body, limit: 1, timeout: 10_000) do
+    for result <- InfoSys.compute(ann.body, limit: 1, timeout: 10_000) do
       attrs = %{url: result.url, body: result.text, at: ann.at}
       # we query the result and get it's backend (Wolfram, Google, etc)
       info_changeset =
