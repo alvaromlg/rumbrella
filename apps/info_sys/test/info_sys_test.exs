@@ -20,6 +20,10 @@ defmodule InfoSysTest do
       send(owner, {:backend, self()})
       :timer.sleep(:infinity) # forces a timeout
     end
+    # simulates a crash
+    def fetch("boom", _ref, _owner, _limit) do
+      raise "boom!"
+    end
   end
 
   test "compute/2 with backend results" do
@@ -40,6 +44,13 @@ defmodule InfoSysTest do
     # pass or fail depending on the race condition.
     ref = Process.monitor(backend_pid)
     assert_receive {:DOWN, ^ref, :process, _pid, _reason}
+    refute_received {:DOWN, _, _, _, _}
+    refute_received :timedout
+  end
+
+  @tag :capture_log # Only shows log on failed test
+  test "compute/2 discards backend errors" do
+    assert InfoSys.compute("boom", backends: [TestBackend]) == []
     refute_received {:DOWN, _, _, _, _}
     refute_received :timedout
   end
